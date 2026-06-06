@@ -53,7 +53,17 @@ const skincareSlice = createSlice({
                 state.products[index].review = review;
             };
             //to do: asignar tarea para que se puedan crear multiples reviews
-        }
+        },
+        addToRoutine: (state, action: PayloadAction<{type: "morning" | "night"; productId: string}>) => {
+            const {type, productId} = action.payload;
+            if (!state.routine[type].includes(productId)){
+                state.routine[type].push(productId);
+            }
+        },
+        removeFromRoutine: (state, action: PayloadAction<{type: "morning" | "night"; productId: string}>)=>{
+            const {type, productId} = action.payload;
+            state.routine[type] = state.routine[type].filter((pid) => pid !== productId);
+        },
     },
 });
 
@@ -61,7 +71,9 @@ export const {
 addProduct,
 updateProduct,
 deleteProduct,
-addReview
+addReview,
+addToRoutine,
+removeFromRoutine
 } = skincareSlice.actions;
 
 export default skincareSlice.reducer;
