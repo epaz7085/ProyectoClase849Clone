@@ -4,6 +4,8 @@ import ScreenWrapper from "../components/ScreenWrapper";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { i18n } from "../contexts/LanguageContext";
+import { Alert } from "react-native";
+import { supabase } from "../services/supabaseClient";
 
 export default function LoginScreen({ navigation }: any) {
   const [email, setEmail] = useState("mjsalinas@unitec.edu");
@@ -20,6 +22,16 @@ export default function LoginScreen({ navigation }: any) {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+
+    if (error) {
+      Alert.alert("Error", error.message);
+    }
+  };
+
   return (
     <ScreenWrapper>
       <CustomInput
@@ -28,15 +40,23 @@ export default function LoginScreen({ navigation }: any) {
         value={email}
         onChange={setEmail}
       />
-
       <CustomInput
         type="password"
         placeholder="Ingresa tu contraseña"
         value={password}
         onChange={setPassword}
       />
-
       <CustomButton title={i18n.t("signIn")} onPress={handleLogin} />
+      <CustomButton
+        title={"Continuar con Google"}
+        onPress={handleGoogleLogin}
+        variant="secondary"
+      />
+      <CustomButton
+        title={"Crear cuenta"}
+        onPress={() => navigation.navigate("Register")}
+        variant="tertiary"
+      />
     </ScreenWrapper>
   );
 }
